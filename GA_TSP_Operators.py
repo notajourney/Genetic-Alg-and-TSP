@@ -5,9 +5,12 @@ Created on Mon Jan  6 09:35:13 2020
 @author: Win10
 """
 import numpy as np
-###################################################
 
-def get_indecies (local_state='NONE', low=0, high=100):#returns two different indecies [smaller, greater]
+#######################################################################################################
+
+def get_indecies (low=0, high=100,seed=None):#returns two different indecies [smaller, greater]
+    
+    local_state = np.random.RandomState(seed)
 
     index1 = local_state.randint(low,high)
     index2 = local_state.randint(low,high)
@@ -26,20 +29,21 @@ def get_indecies (local_state='NONE', low=0, high=100):#returns two different in
 
     return smaller, greater
 
-###################################################
+#######################################################################################################
 
-def crossover_perm (parent1,parent2,idx1,idx2):#returns child after crossover with both parents
+def crossover_perm (parent1,parent2,idx1,idx2,seed=None):#returns child after crossover with both parents
     #1:implements "order one crossover"
 
     #2: copies to child from parent2  the remaining permutation candidates ( that are not already included in childe)
         # in the same order the candidates apear  in parent2
-    
+
     index1 = idx1
     index2=idx2
-    print("indecies are:",index1, index2)
-    
-    child = local_state.permutation(10)
-    print("child when created: ",child)
+    #print("indecies are:",index1, index2)
+    local_state = np.random.RandomState(seed)
+    child = local_state.permutation(len(parent1))
+
+    #print("child when created: ",child)
     smaller = index1
     larger = index2
     copied_segment=[]
@@ -50,45 +54,28 @@ def crossover_perm (parent1,parent2,idx1,idx2):#returns child after crossover wi
         smaller=smaller+1
     
     smaller = index1
-    larger = index2+1#start after the cut point
-    stopat = larger-1;#end at the cutpoint
+    larger = index2+1#start copying parent2 right after the cut point
     child_index =larger;
     
-    
-    
-    while(1):#cpy by order of parent2
-    
+    for i in range(len(parent2)):
+        
         if(not parent2[larger%10] in copied_segment):
             child[child_index%10] = parent2[larger%10]
             child_index=child_index+1
-        
-        larger=larger+1;
-        if(larger%10==stopat):
-            break;
-    
-    print("parent1:",parent1)
-    print("parent2:",parent2)
-    print("child:  ",child)
+            
+        larger=larger+1
+
     return np.copy(child)
-###################################################
-def mutate_perm(local_state,child,lower_bound=0,upper_bound=100):#implements a swap mutation
-    index1,index2= get_indecies(local_state,lower_bound,upper_bound)
+#######################################################################################################
+def mutate_perm(child,lower_bound=0,upper_bound=150,seed=None):#implements a swap mutation
+    index1,index2= get_indecies(lower_bound, upper_bound,seed)
     temp= child[index1]
     child[index1] = child[index2]
     child[index2]=temp
     return np.copy(child)
 
+#######################################################################################################
 
-####################"Main"###############################
-local_state = np.random.RandomState()
-parent1 = local_state.permutation(10)
-parent2 = local_state.permutation(10)
-print (parent1)
-print (parent2)
-idx1,idx2 = get_indecies(local_state,0,10)
-child = crossover_perm(parent1,parent2,idx1,idx2)
-
-print ("in main:" ,child)
 
 
 
