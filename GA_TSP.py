@@ -9,6 +9,7 @@ Created on Sun Jan  5 19:07:17 2020
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import GA_TSP_Operators as op
 
 
 def GA_TSP(n, max_evals, selectfct, fitnessfct, crossoverfct, mutationfct, max_attainable=np.inf, seed=None):
